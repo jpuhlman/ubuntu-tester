@@ -1,13 +1,16 @@
 #!/bin/bash
-
+set -x 
+if [ -e /APT-GPG-KEY-ERS ] ; then
+    apt-key add /APT-GPG-KEY-ERS
+fi
 if [ -d local-repos ] ; then
-    for repo in local-repos/*; do 
+    for repo in /local-repos/*; do 
         for release in $repo/dists/*; do
-            RELEASE=$(dirname $release)
+            RELEASE=$(basename $release)
             for section in $release/*; do
                 if [ -d $section ] ; then
-                    SECTION=$(dirname $section)
-                    echo "deb file://$repo $release $SECTION" >> /etc/apt/sources.list.d/montavista.list
+                    SECTION=$(basename $section)
+                    echo "deb file://$repo ./$RELEASE $SECTION" >> /etc/apt/sources.list.d/montavista.list
                 fi
             done
         done
